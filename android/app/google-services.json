@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "491093025697",
+    "firebase_url": "https://toy-manager-default-rtdb.firebaseio.com",
+    "project_id": "toy-manager",
+    "storage_bucket": "toy-manager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491093025697:android:45e5db29d53a12697961e0",
+        "android_client_info": {
+          "package_name": "com.example.toy_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491093025697-d4dunqltt1ovvafi3ug9hcajrfqd64kf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.toy_manager",
+            "certificate_hash": "1708ac30c168686e272a9640520ee8ee52d4d4d3"
+          }
+        },
+        {
+          "client_id": "491093025697-bkub62undpk1hfi4rl4h1lh3qf903rvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9q-Gk0Pwws0pFXHwdDZiT4aLLBbCGmoc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491093025697-bkub62undpk1hfi4rl4h1lh3qf903rvv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491093025697-560862mvma85lsadadol3slh7cdtqmm5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.toyManager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
