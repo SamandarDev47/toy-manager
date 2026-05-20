@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>491093025697-560862mvma85lsadadol3slh7cdtqmm5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.491093025697-560862mvma85lsadadol3slh7cdtqmm5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>491093025697-d4dunqltt1ovvafi3ug9hcajrfqd64kf.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCsRorpyClHeVAYHiI_Vdu4a_Rf3kARuQ4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>491093025697</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.toyManager</string>
+	<key>PROJECT_ID</key>
+	<string>toy-manager</string>
+	<key>STORAGE_BUCKET</key>
+	<string>toy-manager.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:491093025697:ios:499d095e1bba88657961e0</string>
+	<key>DATABASE_URL</key>
+	<string>https://toy-manager-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -13,6 +13,9 @@ workflows:
     scripts:
       - name: Flutter clean
         script: flutter clean
+      - name: Remove stale iOS caches
+        script: |
+          rm -rf ios/Pods ios/Podfile.lock
       - name: Install dependencies
         script: flutter pub get
       - name: Build iOS release

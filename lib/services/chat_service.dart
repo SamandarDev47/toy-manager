@@ -6,6 +6,7 @@ import '../models/chat_message.dart';
 class ChatService {
   final DatabaseReference _messagesRef = FirebaseDatabase.instance.ref('chats/main/messages');
   final DatabaseReference _typingRef = FirebaseDatabase.instance.ref('chats/main/typing');
+  final DatabaseReference _usersRef = FirebaseDatabase.instance.ref('users');
 
   Stream<List<ChatMessage>> messages() {
     return _messagesRef.orderByChild('createdAt').limitToLast(250).onValue.map((event) {
@@ -53,11 +54,7 @@ class ChatService {
   }
 
   Future<void> deleteMessage(String id) async {
-    await _messagesRef.child(id).update({
-      'text': 'Xabar o‘chirildi',
-      'deleted': true,
-      'updatedAt': DateTime.now().millisecondsSinceEpoch,
-    });
+    await _messagesRef.child(id).remove();
   }
 
   Future<void> markAsRead(List<ChatMessage> messages) async {
@@ -70,6 +67,39 @@ class ChatService {
       }
     }
     if (updates.isNotEmpty) await _messagesRef.update(updates);
+  }
+
+  Stream<int> unreadCount() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return Stream.value(0);
+    return messages().map((items) => items.where((m) => m.senderId != uid && m.readBy[uid] != true && !m.deleted).length);
+  }
+
+
+  Future<List<String>> seenNames(ChatMessage message) async {
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUid == null || message.senderId != currentUid) return <String>[];
+
+    final seenUids = message.readBy.entries
+        .where((entry) => entry.value == true && entry.key != currentUid)
+        .map((entry) => entry.key)
+        .toSet()
+        .toList();
+
+    if (seenUids.isEmpty) return <String>[];
+
+    final names = <String>[];
+    for (final uid in seenUids) {
+      final snap = await _usersRef.child(uid).get();
+      if (snap.value is Map) {
+        final user = AppUser.fromMap(Map<dynamic, dynamic>.from(snap.value as Map), uid);
+        names.add(user.fullName);
+      } else {
+        names.add('Foydalanuvchi');
+      }
+    }
+    names.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return names;
   }
 
   Future<void> setTyping(AppUser user, bool typing) async {

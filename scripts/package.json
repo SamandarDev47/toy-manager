@@ -1,0 +1,13 @@
+{
+  "name": "toy-manager-notification-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free GitHub Actions notification scripts for Toy Manager.",
+  "main": "send_tomorrow_notifications.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

@@ -46,6 +46,8 @@ class FirebaseService {
 
   Future<void> deleteWedding(String id) async => _dbRef.child(id).remove();
 
+  Future<void> deleteHistoryWedding(String id) async => _historyRef.child(id).remove();
+
   Stream<List<Wedding>> getWeddings() {
     return _dbRef.onValue.map((event) {
       final list = _parseWeddingList(event.snapshot.value);

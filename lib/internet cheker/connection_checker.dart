@@ -1,109 +1,71 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
+
+import '../widgets/no_internet_view.dart';
 
 class ConnectionChecker extends StatefulWidget {
-  final Widget child; // ilovaning asosiy ekrani
-  const ConnectionChecker({super.key, required this.child});
+  final Widget child;
+
+  const ConnectionChecker({
+    super.key,
+    required this.child,
+  });
 
   @override
   State<ConnectionChecker> createState() => _ConnectionCheckerState();
 }
 
 class _ConnectionCheckerState extends State<ConnectionChecker> {
-  bool _isDeviceConnected = true;
-  late StreamSubscription _subscription;
-  bool _showOnlineBanner = false;
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
+  bool _offline = false;
+  bool _checking = true;
 
   @override
   void initState() {
     super.initState();
-    _startMonitoring();
-  }
-  void _startMonitoring() {
-    _subscription = Connectivity().onConnectivityChanged.listen((_) async {
-      final hasConnection = await InternetConnection().hasInternetAccess;
-
-      if (!hasConnection && _isDeviceConnected) {
-        setState(() => _isDeviceConnected = false);
-      } else if (hasConnection && !_isDeviceConnected) {
-        setState(() {
-          _isDeviceConnected = true;
-          _showOnlineBanner = true;
-        });
-
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) setState(() => _showOnlineBanner = false);
-        });
-      }
-    });
+    _checkConnection();
+    _subscription = _connectivity.onConnectivityChanged.listen(_updateStatus);
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
     super.dispose();
+  }
+
+  Future<void> _checkConnection() async {
+    try {
+      final results = await _connectivity.checkConnectivity();
+      _updateStatus(results);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _offline = false;
+        _checking = false;
+      });
+    }
+  }
+
+  void _updateStatus(List<ConnectivityResult> results) {
+    if (!mounted) return;
+    final isOffline = results.isEmpty || results.contains(ConnectivityResult.none);
+    setState(() {
+      _offline = isOffline;
+      _checking = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        // Offline holat
-        if (!_isDeviceConnected)
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.7),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/offline.json',
-                      width: 200,
-                      height: 200,
-                      repeat: true,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Siz oflinesiz 😕',
-                      style: TextStyle(color: Colors.white, fontSize: 22),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Iltimos, internetni yoqing',
-                      style: TextStyle(color: Colors.white70, fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        // Online bo'lganini ko'rsatish
-        if (_showOnlineBanner)
-          Positioned(
-            top: 50,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade600,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Text(
-                  'Online ✅',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
+    if (_checking) return widget.child;
+    if (_offline) {
+      return NoInternetView(
+        onRetry: _checkConnection,
+      );
+    }
+    return widget.child;
   }
 }

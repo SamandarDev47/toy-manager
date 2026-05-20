@@ -115,6 +115,7 @@ class AuthService {
     required String lastName,
     required String phone,
     String? provider,
+    String? role,
   }) async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('Foydalanuvchi topilmadi');
@@ -126,7 +127,7 @@ class AuthService {
       lastName: lastName.trim(),
       phone: phone.trim(),
       email: user.email ?? existing?.email ?? '',
-      role: existing?.role ?? 'user',
+      role: (role == null || role.trim().isEmpty) ? (existing?.role ?? 'user') : role.trim(),
       provider: provider ?? existing?.provider ?? _providerOf(user),
       photoUrl: user.photoURL ?? existing?.photoUrl,
       createdAt: existing?.createdAt == 0 || existing?.createdAt == null ? now : existing!.createdAt,
