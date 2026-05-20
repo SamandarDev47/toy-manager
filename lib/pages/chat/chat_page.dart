@@ -95,8 +95,10 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppTheme.pageGradient),
+        child: Column(
+          children: [
           Expanded(
             child: StreamBuilder<List<ChatMessage>>(
               stream: _service.messages(),
@@ -135,7 +137,7 @@ class _ChatPageState extends State<ChatPage> {
             Container(
               margin: const EdgeInsets.fromLTRB(12, 0, 12, 6),
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: AppTheme.stroke), boxShadow: AppTheme.smallShadow),
               child: Row(children: [
                 Icon(_editing != null ? Icons.edit : Icons.reply, color: AppTheme.primary),
                 const SizedBox(width: 8),
@@ -146,7 +148,7 @@ class _ChatPageState extends State<ChatPage> {
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 96),
               child: Row(
                 children: [
                   Expanded(
@@ -169,6 +171,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
         ],
+        ),
       ),
     );
   }

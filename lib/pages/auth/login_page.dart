@@ -103,7 +103,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final canUseApple = Platform.isIOS || Platform.isMacOS;
     return Scaffold(
-      body: SafeArea(
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppTheme.pageGradient),
+        child: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -213,6 +215,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+        ),
         ),
       ),
     );

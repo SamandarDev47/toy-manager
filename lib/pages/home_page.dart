@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/wedding.dart';
 import '../services/firebase_services.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_shell.dart';
 import 'history_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,35 +34,49 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _service.archivePastWeddings,
-        child: StreamBuilder<List<Wedding>>(
-          stream: _service.getWeddings(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final weddings = snapshot.data ?? [];
-            if (weddings.isEmpty) {
-              return ListView(
-                children: const [
-                  SizedBox(height: 180),
-                  Icon(Icons.event_busy_rounded, size: 76, color: AppTheme.muted),
-                  SizedBox(height: 12),
-                  Center(child: Text('Hozircha faol to‘ylar yo‘q')),
-                ],
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppTheme.pageGradient),
+        child: RefreshIndicator(
+          onRefresh: _service.archivePastWeddings,
+          child: StreamBuilder<List<Wedding>>(
+            stream: _service.getWeddings(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final weddings = snapshot.data ?? [];
+              if (weddings.isEmpty) {
+                return ListView(
+                  padding: EdgeInsets.fromLTRB(16, 120, 16, 24),
+                  children: [
+                    EmptyState(
+                      icon: Icons.event_busy_rounded,
+                      title: 'Hozircha faol to‘ylar yo‘q',
+                      subtitle: 'Yangi to‘y qo‘shsangiz, ular shu yerda chiroyli ro‘yxat bo‘lib chiqadi.',
+                    ),
+                  ],
+                );
+              }
+              return ListView.separated(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
+                itemCount: weddings.length + 1,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return HeroPanel(
+                      icon: Icons.event_available_rounded,
+                      title: '${weddings.length} ta faol to‘y',
+                      subtitle: 'Bugungi va yaqin kunlardagi to‘y jadvali.',
+                    );
+                  }
+                  return _WeddingTile(
+                    wedding: weddings[index - 1],
+                    onTap: () => _openDetails(weddings[index - 1]),
+                  );
+                },
               );
-            }
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-              itemCount: weddings.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, index) => _WeddingTile(
-                wedding: weddings[index],
-                onTap: () => _openDetails(weddings[index]),
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );
@@ -204,7 +219,8 @@ class _WeddingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final days = _daysLeft(wedding);
     final color = wedding.isToday ? Colors.orange : AppTheme.primary;
-    return Card(
+    return Container(
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), border: Border.all(color: AppTheme.stroke), boxShadow: AppTheme.smallShadow),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
         onTap: onTap,

@@ -91,13 +91,15 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     final email = firebaseUser?.email ?? '';
     return Scaffold(
       appBar: AppBar(title: const Text('Profil va sozlanmalar', style: TextStyle(fontWeight: FontWeight.w900))),
-      body: StreamBuilder<AppUser?>(
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppTheme.pageGradient),
+        child: StreamBuilder<AppUser?>(
         stream: AuthService.instance.profileStream(),
         builder: (context, snapshot) {
           final user = snapshot.data;
           if (user != null) _fill(user);
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
             children: [
               _ProfileHeader(user: user, email: email, photoUrl: firebaseUser?.photoURL),
               const SizedBox(height: 16),
@@ -159,6 +161,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
             ],
           );
         },
+        ),
       ),
     );
   }
