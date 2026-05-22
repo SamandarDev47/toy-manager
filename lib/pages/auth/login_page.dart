@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
     final canUseApple = Platform.isIOS || Platform.isMacOS;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.pageGradient),
+        decoration: BoxDecoration(gradient: AppTheme.pageGradientOf(context)),
         child: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -131,12 +131,12 @@ class _LoginPageState extends State<LoginPage> {
                     loading: _appleLoading,
                     onPressed: canUseApple && !_appleLoading && !_loading ? _appleSignIn : null,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Row(children: [
-                      Expanded(child: Divider()),
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('yoki email bilan', style: TextStyle(color: AppTheme.muted))),
-                      Expanded(child: Divider()),
+                      const Expanded(child: Divider()),
+                      Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text('yoki email bilan', style: TextStyle(color: AppTheme.subtext(context)))),
+                      const Expanded(child: Divider()),
                     ]),
                   ),
                   Card(
@@ -287,7 +287,7 @@ class _SocialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AppTheme.card(context),
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
@@ -296,30 +296,30 @@ class _SocialButton extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: Colors.black.withOpacity(.06)),
-            boxShadow: AppTheme.smallShadow,
+            border: Border.all(color: AppTheme.line(context)),
+            boxShadow: AppTheme.isDark(context) ? null : AppTheme.smallShadow,
           ),
           child: Row(
             children: [
               Container(
                 height: 46,
                 width: 46,
-                decoration: BoxDecoration(color: AppTheme.surfaceAlt, borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(color: AppTheme.alt(context), borderRadius: BorderRadius.circular(16)),
                 child: Center(
                   child: loading
                       ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
                       : icon != null
-                          ? Icon(icon, size: 28, color: AppTheme.ink)
+                          ? Icon(icon, size: 28, color: AppTheme.text(context))
                           : Text(iconText ?? '', style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w900, color: AppTheme.primary)),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                Text(title, style: TextStyle(color: AppTheme.text(context), fontWeight: FontWeight.w900, fontSize: 15)),
                 const SizedBox(height: 2),
-                Text(subtitle, style: const TextStyle(color: AppTheme.muted, fontSize: 12)),
+                Text(subtitle, style: TextStyle(color: AppTheme.subtext(context), fontSize: 12)),
               ])),
-              const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppTheme.muted),
+              Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppTheme.subtext(context)),
             ],
           ),
         ),

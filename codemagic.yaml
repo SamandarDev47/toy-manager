@@ -8,21 +8,41 @@ workflows:
       cocoapods: default
       vars:
         APP_NAME: "Toy Manager"
-        BUNDLE_ID: "com.example.toymanager"
-        APPLE_TEAM_ID: "YOUR_TEAM_ID" # Apple developer ID bo‘lsa shu yerga yoziladi
+        BUNDLE_ID: "com.example.toyManager"
+        IOS_DEPLOYMENT_TARGET: "15.0"
+    cache:
+      cache_paths:
+        - ~/.pub-cache
     scripts:
-      - name: Flutter clean
-        script: flutter clean
-      - name: Remove stale iOS caches
+      - name: Clean project caches
         script: |
-          rm -rf ios/Pods ios/Podfile.lock
-      - name: Install dependencies
-        script: flutter pub get
-      - name: Build iOS release
-        script: flutter build ipa --release
+          flutter clean
+          rm -rf ios/Pods ios/Podfile.lock ios/.symlinks
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+      - name: Install Flutter dependencies
+        script: |
+          flutter pub get
+      - name: Force iOS minimum version 15.0
+        script: |
+          /usr/libexec/PlistBuddy -c "Set :MinimumOSVersion 15.0" ios/Flutter/AppFrameworkInfo.plist || true
+          perl -0pi -e "s/platform :ios, '[0-9.]+'/platform :ios, '15.0'/g" ios/Podfile
+          perl -0pi -e 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+          grep -q "IPHONEOS_DEPLOYMENT_TARGET" ios/Flutter/Debug.xcconfig || echo "IPHONEOS_DEPLOYMENT_TARGET=15.0" >> ios/Flutter/Debug.xcconfig
+          grep -q "IPHONEOS_DEPLOYMENT_TARGET" ios/Flutter/Release.xcconfig || echo "IPHONEOS_DEPLOYMENT_TARGET=15.0" >> ios/Flutter/Release.xcconfig
+          grep -R "IPHONEOS_DEPLOYMENT_TARGET\|MinimumOSVersion\|platform :ios" -n ios/Podfile ios/Flutter ios/Runner.xcodeproj/project.pbxproj | head -80
+      - name: Install iOS pods
+        script: |
+          cd ios
+          pod install --repo-update
+          cd ..
+      - name: Build iOS release without codesign
+        script: |
+          flutter build ios --release --no-codesign
     artifacts:
+      - build/ios/iphoneos/Runner.app
       - build/ios/ipa/*.ipa
+      - flutter_drive.log
     publishing:
       email:
         recipients:
-          - samandarxasanovs770@email.com  # build tayyor bo‘lganda bu emailga yuklab olish linkini yuboradi
+          - samandarxasanovs770@email.com

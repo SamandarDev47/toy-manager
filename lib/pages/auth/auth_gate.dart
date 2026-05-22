@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../internet cheker/connection_checker.dart';
+import '../../internet_checker/connection_checker.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/main_navbar.dart';
 import 'login_page.dart';
